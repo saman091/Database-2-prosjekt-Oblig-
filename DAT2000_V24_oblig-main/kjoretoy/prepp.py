@@ -3,6 +3,7 @@ from typing import Union
 import polars as pl
 import pathlib
 import logging
+import datetime
 
 THIS_FOLDER = pathlib.Path(__file__).parent
 STATIC_DATA = THIS_FOLDER / "statiske_data"
@@ -14,7 +15,9 @@ def prepp_kjoretoy(inn_fil: Union[str, pathlib.Path]) -> pl.DataFrame:
 
     # Casting av dato-kolonner.
     # !!!! ERSTATT MED DIN KODE:
-    assert False, "Fjern denne asserten og putt inn din kode"
+    date_columns = ['tekn_reg_f_g_n', 'tekn_neste_pkk', 'tekn_reg_eier_dato']
+    for col in date_columns:
+        df[col] = df[col].cast(pl.Date32)  # Date32 is a date format of year-month-day
 
     # Denne er viktig fordi data er ikke unikt identifisert av kolonnene våre
     # Vi får trøbbel når vi skal gjøre group by senere - noen (forskjellige) biler har identiske data.
@@ -56,7 +59,7 @@ def prepp_kjoretoy(inn_fil: Union[str, pathlib.Path]) -> pl.DataFrame:
 
     # Vi lager en egen elbil-kolonne
     # !!!! ERSTATT MED DIN KODE:
-    assert False, "Fjern denne asserten og putt inn din kode"
+    df['elbil'] = df['tekn_drivstoff'].apply(lambda x: True if x == 'elektrisk' else False)
 
     # Vi vil også ha inn skriftlig beskrivelse av bilmerket
     merkekode = pl.read_csv(STATIC_DATA / "merkekode.csv", separator=";").rename(
