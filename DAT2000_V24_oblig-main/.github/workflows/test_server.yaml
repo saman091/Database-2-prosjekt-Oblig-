@@ -1,0 +1,31 @@
+#Basert på https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+name: Python-tester for oblig 1
+
+on:
+  push:
+    branches: [ "*" ]
+
+jobs:
+  test_webserver_requester:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Start postgresql
+      run: |
+        docker run -p 5432:5432 --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+        sleep 10s
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Start uvicorn
+      run: |
+        uvicorn main:app &
+    - name: Test with pytest
+      run: |
+        pip install pytest==7.4.4
+        pytest
