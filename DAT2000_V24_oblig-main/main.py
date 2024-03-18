@@ -1,5 +1,5 @@
 #Saksa fra tutorialen her: https://fastapi.tiangolo.com/tutorial/first-steps/
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from kjoretoy import kjoretoy_tabell
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, literal
@@ -20,7 +20,10 @@ async def root():
     return {"message": "Hello World"}
 
 @app.get("/regdato")
-async def regdato():
+async def regdato(tekn_reg_f_g_n: str = Query(None)):
+    if tekn_reg_f_g_n is None:
+        return {"error": "Please provide tekn_reg_f_g_n as a query parameter"}
+    
     with engine.connect() as conn:
         res = conn.execute(
             kjoretoy.select().with_only_columns(
@@ -28,7 +31,8 @@ async def regdato():
                 kjoretoy.c.tekn_modell
             ).where(
                 # Dere må endre sånn at ønsket regdato angis som query-parameter i URL
-                kjoretoy.c.tekn_reg_f_g_n == literal("2022-01-01"))
+                kjoretoy.c.tekn_reg_f_g_n == literal(tekn_reg_f_g_n)
+                )
         )
 
         out_list = []
