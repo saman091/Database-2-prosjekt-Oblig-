@@ -47,3 +47,6 @@ async def regdato(tekn_reg_f_g_n: str = Query(None)):
 @app.get("/pkkdato")
 async def pkkdato():
     pass
+
+
+
