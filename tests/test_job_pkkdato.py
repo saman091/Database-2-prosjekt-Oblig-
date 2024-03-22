@@ -25,22 +25,12 @@ def db():
     )
 
 
-def test_kjoretoy_regdato(db):
-    kjoretoy_endpoint = URL + "/regdato/2022-01-01"
+def test_kjoretoy_pkkdato(db):
+    kjoretoy_endpoint = URL + "/pkkdato/2022-01-01"
     resp = requests.get(kjoretoy_endpoint)
     svar = resp.json()
     print(svar)
-    forventet = [{'elbil': False,
-  'farge': 'Rød (også burgunder)',
-  'merke': 'LYNX',
-  'modell': 'ADVENTURE STD 600ACE',
-  'registreringsdato': '2022-01-01'},
- {'elbil': False,
-  'farge': 'Svart (også blåsvart, grafitt mørk, gråsort, koksgrå mørk, koksgrå '
-           'mørk metallic)',
-  'merke': 'PEUGEOT',
-  'modell': '2008',
-  'registreringsdato': '2022-01-01'}]
+    forventet = []
 
     # Vi skal sortere lister bestående av dict, og da må vi angi manuelt hvordan disse skal sorteres med en funksjon.
     sorterer = lambda x:x["farge"] + x["modell"]

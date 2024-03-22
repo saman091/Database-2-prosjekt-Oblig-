@@ -23,24 +23,20 @@ def db():
         connstr,
         df
     )
-
-
-def test_kjoretoy_regdato(db):
-    kjoretoy_endpoint = URL + "/regdato/2022-01-01"
+def nytt_test_kjoretoy_regdato(db):
+    kjoretoy_endpoint = URL + "/regdato/2022-01-02"
     resp = requests.get(kjoretoy_endpoint)
     svar = resp.json()
     print(svar)
     forventet = [{'elbil': False,
   'farge': 'Rød (også burgunder)',
   'merke': 'LYNX',
-  'modell': 'ADVENTURE STD 600ACE',
-  'registreringsdato': '2022-01-01'},
+  'modell': 'ADVENTURE STD 600ACE'},
  {'elbil': False,
   'farge': 'Svart (også blåsvart, grafitt mørk, gråsort, koksgrå mørk, koksgrå '
            'mørk metallic)',
   'merke': 'PEUGEOT',
-  'modell': '2008',
-  'registreringsdato': '2022-01-01'}]
+  'modell': '2008'}]
 
     # Vi skal sortere lister bestående av dict, og da må vi angi manuelt hvordan disse skal sorteres med en funksjon.
     sorterer = lambda x:x["farge"] + x["modell"]

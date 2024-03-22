@@ -28,7 +28,8 @@ async def regdato(dato: str):
                 kjoretoy.c.farge_navn,
                 kjoretoy.c.tekn_modell,
                 kjoretoy.c.merke_navn,
-                kjoretoy.c.elbil
+                kjoretoy.c.elbil,
+                kjoretoy.c.tekn_reg_f_g_n
             ).where(
                 # Dere må endre sånn at ønsket regdato angis som query-parameter i URL
                 kjoretoy.c.tekn_reg_f_g_n == literal(dato)
@@ -42,13 +43,37 @@ async def regdato(dato: str):
             out["modell"] = r[1]
             out["merke"] = r[2]
             out["elbil"] = r[3]
+            out["registreringsdato"] = r[4]
             out_list.append(out)
 
         return out_list
 
-@app.get("/pkkdato")
-async def pkkdato():
-    pass
+@app.get("/pkkdato/{dato}")
+async def pkkdato(dato: str):
+    with engine.connect() as conn:
+        res = conn.execute(
+            kjoretoy.select().with_only_columns(
+                kjoretoy.c.farge_navn,
+                kjoretoy.c.tekn_modell,
+                kjoretoy.c.merke_navn,
+                kjoretoy.c.elbil,
+                kjoretoy.c.tekn_reg_f_g_n
+            ).where(
+                kjoretoy.c.tekn_neste_pkk == literal(dato)
+            )
+        )
+
+        out_list = []
+        for r in res:
+            out = {}
+            out["farge"] = r[0]
+            out["modell"] = r[1]
+            out["merke"] = r[2]
+            out["elbil"] = r[3]
+            out["registreringsdato"] = r[4]
+            out_list.append(out)
+
+        return out_list
 
 if __name__ == "__main__":
     subprocess.run(["uvicorn", "main:app", "--reload"])
