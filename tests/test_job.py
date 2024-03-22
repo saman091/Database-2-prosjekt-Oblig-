@@ -48,3 +48,27 @@ def test_kjoretoy_regdato(db):
     svar.sort(key=sorterer)
 
     assert svar == forventet
+
+def nytt_test_kjoretoy_regdato(db):
+    kjoretoy_endpoint = URL + "/regdato/2022-01-02"
+    resp = requests.get(kjoretoy_endpoint)
+    svar = resp.json()
+    print(svar)
+    forventet = [{'elbil': False,
+  'farge': 'Rød (også burgunder)',
+  'merke': 'LYNX',
+  'modell': 'ADVENTURE STD 600ACE'},
+ {'elbil': False,
+  'farge': 'Svart (også blåsvart, grafitt mørk, gråsort, koksgrå mørk, koksgrå '
+           'mørk metallic)',
+  'merke': 'PEUGEOT',
+  'modell': '2008'}]
+
+    # Vi skal sortere lister bestående av dict, og da må vi angi manuelt hvordan disse skal sorteres med en funksjon.
+    sorterer = lambda x:x["farge"] + x["modell"]
+
+    # Vi sorterer de to listene
+    forventet.sort(key=sorterer)
+    svar.sort(key=sorterer)
+
+    assert svar == forventet
