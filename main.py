@@ -21,7 +21,7 @@ async def root():
     return {"message": "Hello World"}
 
 @app.get("/regdato/{dato}")
-async def regdato(dato):
+async def regdato(dato: str):
     with engine.connect() as conn:
         res = conn.execute(
             kjoretoy.select().with_only_columns(
