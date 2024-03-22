@@ -30,11 +30,15 @@ def test_kjoretoy_regdato(db):
     resp = requests.get(kjoretoy_endpoint)
     svar = resp.json()
     print(svar)
-    forventet = [
-        {'farge': 'Svart (også blåsvart, grafitt mørk, gråsort, koksgrå mørk, koksgrå mørk metallic)',
-         'modell': '2008'},
-        {'farge': 'Rød (også burgunder)',
-         'modell': 'ADVENTURE STD 600ACE'}]
+    forventet = [{'elbil': False,
+  'farge': 'Rød (også burgunder)',
+  'merke': 'LYNX',
+  'modell': 'ADVENTURE STD 600ACE'},
+ {'elbil': False,
+  'farge': 'Svart (også blåsvart, grafitt mørk, gråsort, koksgrå mørk, koksgrå '
+           'mørk metallic)',
+  'merke': 'PEUGEOT',
+  'modell': '2008'}]
 
     # Vi skal sortere lister bestående av dict, og da må vi angi manuelt hvordan disse skal sorteres med en funksjon.
     sorterer = lambda x:x["farge"] + x["modell"]
