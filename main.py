@@ -19,11 +19,8 @@ app = FastAPI()
 async def root():
     return {"message": "Hello World"}
 
-@app.get("/regdato")
-async def regdato(tekn_reg_f_g_n: str = Query(None)):
-    if tekn_reg_f_g_n is None:
-        return {"error": "Please provide tekn_reg_f_g_n as a query parameter"}
-    
+@app.get("/regdato/{dato}")
+async def regdato(dato):
     with engine.connect() as conn:
         res = conn.execute(
             kjoretoy.select().with_only_columns(
@@ -31,7 +28,7 @@ async def regdato(tekn_reg_f_g_n: str = Query(None)):
                 kjoretoy.c.tekn_modell
             ).where(
                 # Dere må endre sånn at ønsket regdato angis som query-parameter i URL
-                kjoretoy.c.tekn_reg_f_g_n == literal(tekn_reg_f_g_n)
+                kjoretoy.c.tekn_reg_f_g_n == literal(dato)
                 )
         )
 

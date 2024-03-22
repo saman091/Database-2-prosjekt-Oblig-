@@ -3,7 +3,6 @@ from typing import Union
 import polars as pl
 import pathlib
 import logging
-import datetime
 
 THIS_FOLDER = pathlib.Path(__file__).parent
 STATIC_DATA = THIS_FOLDER / "statiske_data"
@@ -15,9 +14,13 @@ def prepp_kjoretoy(inn_fil: Union[str, pathlib.Path]) -> pl.DataFrame:
 
     # Casting av dato-kolonner.
     # !!!! ERSTATT MED DIN KODE:
-    date_columns = ['tekn_reg_f_g_n', 'tekn_neste_pkk', 'tekn_reg_eier_dato']
-    for col in date_columns:
-        df[col] = df[col].cast(pl.Date32)  # Date32 is a date format of year-month-day
+    df = df.with_columns([
+        pl.col("tekn_reg_f_g_n").cast(str).str.strptime(pl.Date, "%Y%m%d"),
+        pl.col("tekn_reg_f_g").cast(str).str.strptime(pl.Date, "%Y%m%d"),
+        pl.col("tekn_reg_eier_dato").cast(str).str.strptime(pl.Date, "%Y%m%d"),
+        pl.col("tekn_siste_pkk").str.strptime(pl.Date, "%Y%m%d", strict=False),
+        pl.col("tekn_neste_pkk").str.strptime(pl.Date, "%Y%m%d", strict=False)
+    ])
 
     # Denne er viktig fordi data er ikke unikt identifisert av kolonnene våre
     # Vi får trøbbel når vi skal gjøre group by senere - noen (forskjellige) biler har identiske data.
@@ -59,7 +62,9 @@ def prepp_kjoretoy(inn_fil: Union[str, pathlib.Path]) -> pl.DataFrame:
 
     # Vi lager en egen elbil-kolonne
     # !!!! ERSTATT MED DIN KODE:
-    df['elbil'] = df['tekn_drivstoff'].apply(lambda x: True if x == 'elektrisk' else False)
+    df = df.with_columns(
+        (pl.col("tekn_drivstoff") == "Elektrisk").alias("elbil")
+    )
 
     # Vi vil også ha inn skriftlig beskrivelse av bilmerket
     merkekode = pl.read_csv(STATIC_DATA / "merkekode.csv", separator=";").rename(

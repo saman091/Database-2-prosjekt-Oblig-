@@ -26,10 +26,10 @@ def db():
 
 
 def test_kjoretoy_regdato(db):
-    kjoretoy_endpoint = URL + "/regdato"
+    kjoretoy_endpoint = URL + "/regdato/2022-01-01"
     resp = requests.get(kjoretoy_endpoint)
     svar = resp.json()
-
+    print(svar)
     forventet = [
         {'farge': 'Svart (også blåsvart, grafitt mørk, gråsort, koksgrå mørk, koksgrå mørk metallic)',
          'modell': '2008'},
